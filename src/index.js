@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import { AccessToken, EgressClient, EncodedFileOutput, EncodedFileType, WebhookReceiver } from "livekit-server-sdk";
+import { AccessToken, EgressClient, EncodedFileOutput, EncodedFileType } from "livekit-server-sdk";
 import { S3Service } from "./s3.service.js";
 
 const SERVER_PORT = process.env.SERVER_PORT || 6080;
@@ -42,18 +42,6 @@ app.post("/token", async (req, res) => {
     at.addGrant({ roomJoin: true, room: roomName, roomRecord: true });
     const token = await at.toJwt();
     res.json({ token });
-});
-
-const webhookReceiver = new WebhookReceiver(LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
-
-app.post("/livekit/webhook", async (req, res) => {
-    try {
-        const event = await webhookReceiver.receive(req.body, req.get("Authorization"));
-        console.log(event);
-    } catch (error) {
-        console.error("Error validating webhook event.", error);
-    }
-    res.status(200).send();
 });
 
 const egressClient = new EgressClient(LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
