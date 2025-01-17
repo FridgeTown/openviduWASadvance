@@ -130,3 +130,5 @@ dist
 
 # public 제외 
 public/
+
+.env
